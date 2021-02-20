@@ -4,112 +4,269 @@ describe('importexport.js', function () {
   const testCases = [
     {
       name: 'import a pad with newlines from txt',
-      inputText: 'imported text\nnewline',
+      inputText: [
+        'imported text\n',
+        'newline',
+      ].join(''),
       wantPadLines: [
         '<span class="">imported text</span>',
         '<span class="">newline</span>',
       ],
-      wantExportHtmlBody: 'imported text<br>newline<br>',
-      wantExportText: 'imported text\nnewline\n',
+      wantExportHtmlBody: [
+        'imported text<br>',
+        'newline<br>',
+      ].join(''),
+      wantExportText: [
+        'imported text\n',
+        'newline\n',
+      ].join(''),
     },
     {
       name: 'import a pad with newlines from html',
-      inputHtmlBody: 'htmltext<br>newline',
+      inputHtmlBody: [
+        'htmltext<br>',
+        'newline',
+      ].join(''),
       wantPadLines: [
         '<span class="">htmltext</span>',
         '<span class="">newline</span>',
         '<br>',
       ],
-      wantExportHtmlBody: 'htmltext<br>newline<br><br>',
-      wantExportText: 'htmltext\nnewline\n\n',
+      wantExportHtmlBody: [
+        'htmltext<br>',
+        'newline<br>',
+        '<br>',
+      ].join(''),
+      wantExportText: [
+        'htmltext\n',
+        'newline\n',
+        '\n',
+      ].join(''),
     },
     {
       name: 'import a pad with attributes from html',
-      inputHtmlBody: 'htmltext<br/><span class="b s i u">' +
-        '<b><i><s><u>newline</u></s></i></b>',
+      inputHtmlBody: [
+        'htmltext<br/>',
+        '<span class="b s i u"><b><i><s><u>newline</u></s></i></b>',
+      ].join(''),
       wantPadLines: [
         '<span class="">htmltext</span>',
         '<span class="b i s u"><b><i><s><u>newline</u></s></i></b></span>',
         '<br>',
       ],
-      wantExportHtmlBody: 'htmltext<br><strong><em><s><u>newline</u></s></em></strong><br><br>',
-      wantExportText: 'htmltext\nnewline\n\n',
+      wantExportHtmlBody: [
+        'htmltext<br>',
+        '<strong><em><s><u>newline</u></s></em></strong><br>',
+        '<br>',
+      ].join(''),
+      wantExportText: [
+        'htmltext\n',
+        'newline\n',
+        '\n',
+      ].join(''),
     },
     {
       name: 'import a pad with bullets from html',
-      inputHtmlBody: '<ul class="list-bullet1"><li>bullet line 1</li>' +
-      '<li>bullet line 2</li><ul class="list-bullet2"><li>bullet2 line 1</li>' +
-      '<li>bullet2 line 2</li></ul></ul>',
-      wantPadLines: ['<ul class="list-bullet1"><li><span class="">bullet line 1</span></li></ul>',
+      inputHtmlBody: [
+        '<ul class="list-bullet1">',
+        ' <li>bullet line 1</li>',
+        ' <li>bullet line 2</li>',
+        ' <ul class="list-bullet2">',
+        '  <li>bullet2 line 1</li>',
+        '  <li>bullet2 line 2</li>',
+        ' </ul>',
+        '</ul>',
+      ].join(''),
+      wantPadLines: [
+        '<ul class="list-bullet1"><li><span class="">bullet line 1</span></li></ul>',
         '<ul class="list-bullet1"><li><span class="">bullet line 2</span></li></ul>',
         '<ul class="list-bullet2"><li><span class="">bullet2 line 1</span></li></ul>',
         '<ul class="list-bullet2"><li><span class="">bullet2 line 2</span></li></ul>',
-        '<br>'],
-      wantExportHtmlBody: '<ul class=bullet><li>bullet line 1</li><li>bullet line 2' +
-      '<ul class=bullet><li>bullet2 line 1</li><li>bullet2 line 2</li></ul></li></ul><br>',
-      wantExportText: '\t* bullet line 1\n\t* bullet line 2\n\t\t* bullet2 line 1' +
-      '\n\t\t* bullet2 line 2\n\n',
+        '<br>',
+      ],
+      wantExportHtmlBody: [
+        '<ul class=bullet>',
+        ' <li>bullet line 1</li>',
+        ' <li>bullet line 2',
+        '  <ul class=bullet>',
+        '   <li>bullet2 line 1</li>',
+        '   <li>bullet2 line 2</li>',
+        '  </ul>',
+        ' </li>',
+        '</ul>',
+        '<br>',
+      ].map((l) => l.replace(/^\s+/, '')).join(''),
+      wantExportText: [
+        '\t* bullet line 1\n',
+        '\t* bullet line 2\n',
+        '\t\t* bullet2 line 1\n',
+        '\t\t* bullet2 line 2\n',
+        '\n',
+      ].join(''),
     },
     {
       name: 'import a pad with bullets and newlines from html',
-      inputHtmlBody: '<ul class="list-bullet1"><li>bullet line 1</li>' +
-        '</ul><br/><ul class="list-bullet1"><li>bullet line 2</li><ul class="list-bullet2">' +
-        '<li>bullet2 line 1</li></ul></ul><br/><ul class="list-bullet1">' +
-        '<ul class="list-bullet2"><li>bullet2 line 2</li></ul></ul>',
-      wantPadLines: ['<ul class="list-bullet1"><li><span class="">bullet line 1</span></li></ul>',
+      inputHtmlBody: [
+        '<ul class="list-bullet1">',
+        ' <li>bullet line 1</li>',
+        '</ul>',
+        '<br/>',
+        '<ul class="list-bullet1">',
+        ' <li>bullet line 2</li>',
+        ' <ul class="list-bullet2">',
+        '  <li>bullet2 line 1</li>',
+        ' </ul>',
+        '</ul>',
+        '<br/>',
+        '<ul class="list-bullet1">',
+        ' <ul class="list-bullet2">',
+        '  <li>bullet2 line 2</li>',
+        ' </ul>',
+        '</ul>',
+      ].join(''),
+      wantPadLines: [
+        '<ul class="list-bullet1"><li><span class="">bullet line 1</span></li></ul>',
         '<br>',
         '<ul class="list-bullet1"><li><span class="">bullet line 2</span></li></ul>',
         '<ul class="list-bullet2"><li><span class="">bullet2 line 1</span></li></ul>',
         '<br>',
         '<ul class="list-bullet2"><li><span class="">bullet2 line 2</span></li></ul>',
-        '<br>'],
-      wantExportHtmlBody: '<ul class=bullet><li>bullet line 1</li></ul><br>' +
-      '<ul class=bullet><li>bullet line 2<ul class=bullet><li>bullet2 line 1</li>' +
-      '</ul></li></ul><br><ul class=bullet><li><ul class=bullet><li>bullet2 line 2</li>' +
-      '</ul></li></ul><br>',
-      wantExportText: '\t* bullet line 1\n\n\t* bullet line 2\n\t\t* bullet2 line 1\n\n\t\t* ' +
-      'bullet2 line 2\n\n',
+        '<br>',
+      ],
+      wantExportHtmlBody: [
+        '<ul class=bullet>',
+        ' <li>bullet line 1</li>',
+        '</ul>',
+        '<br>',
+        '<ul class=bullet>',
+        ' <li>bullet line 2',
+        '  <ul class=bullet>',
+        '   <li>bullet2 line 1</li>',
+        '  </ul>',
+        ' </li>',
+        '</ul>',
+        '<br>',
+        '<ul class=bullet>',
+        ' <li>',
+        '  <ul class=bullet>',
+        '   <li>bullet2 line 2</li>',
+        '  </ul>',
+        ' </li>',
+        '</ul>',
+        '<br>',
+      ].map((l) => l.replace(/^\s+/, '')).join(''),
+      wantExportText: [
+        '\t* bullet line 1\n',
+        '\n',
+        '\t* bullet line 2\n',
+        '\t\t* bullet2 line 1\n',
+        '\n',
+        '\t\t* bullet2 line 2\n',
+        '\n',
+      ].join(''),
     },
     {
       name: 'import a pad with bullets and newlines and attributes from html',
-      inputHtmlBody: '<ul class="list-bullet1"><li>bullet line 1</li>' +
-        '</ul><br/><ul class="list-bullet1"><li>bullet line 2</li>' +
-        '<ul class="list-bullet2"><li>bullet2 line 1</li></ul></ul>' +
-        '<br/><ul class="list-bullet1"><ul class="list-bullet2"><ul class="list-bullet3">' +
-        '<ul class="list-bullet4"><li><span class="b s i u"><b><i>' +
-        '<s><u>bullet4 line 2 bisu</u></s></i></b></span></li><li>' +
-        '<span class="b s "><b><s>bullet4 line 2 bs</s></b></span></li>' +
-        '<li><span class="u"><u>bullet4 line 2 u</u></span><span class="u i s">' +
-        '<i><s><u>uis</u></s></i></span></li></ul></ul></ul></ul>',
-      wantPadLines: ['<ul class="list-bullet1"><li><span class="">bullet line 1</span></li></ul>',
+      inputHtmlBody: [
+        '<ul class="list-bullet1">',
+        ' <li>bullet line 1</li>',
+        '</ul>',
+        '<br/>',
+        '<ul class="list-bullet1">',
+        ' <li>bullet line 2</li>',
+        ' <ul class="list-bullet2">',
+        '  <li>bullet2 line 1</li>',
+        ' </ul>',
+        '</ul>',
+        '<br/>',
+        '<ul class="list-bullet1">',
+        ' <ul class="list-bullet2">',
+        '  <ul class="list-bullet3">',
+        '   <ul class="list-bullet4">',
+        '    <li><span class="b s i u"><b><i><s><u>bullet4 line 2 bisu</u></s></i></b></span></li>',
+        '    <li><span class="b s "><b><s>bullet4 line 2 bs</s></b></span></li>',
+        '    <li><span class="u"><u>bullet4 line 2 u</u></span>' +
+                '<span class="u i s"><i><s><u>uis</u></s></i></span></li>',
+        '   </ul>',
+        '  </ul>',
+        ' </ul>',
+        '</ul>',
+      ].join(''),
+      wantPadLines: [
+        '<ul class="list-bullet1"><li><span class="">bullet line 1</span></li></ul>',
         '<br>',
         '<ul class="list-bullet1"><li><span class="">bullet line 2</span></li></ul>',
         '<ul class="list-bullet2"><li><span class="">bullet2 line 1</span></li></ul>',
         '<br>',
         '<ul class="list-bullet4"><li><span class="b i s u"><b><i><s><u>' +
-        'bullet4 line 2 bisu</u></s></i></b></span></li></ul>',
+            'bullet4 line 2 bisu</u></s></i></b></span></li></ul>',
         '<ul class="list-bullet4"><li><span class="b s"><b><s>bullet4 line 2 bs</s>' +
-        '</b></span></li></ul>',
+            '</b></span></li></ul>',
         '<ul class="list-bullet4"><li><span class="u"><u>bullet4 line 2 u</u></span>' +
-        '<span class="i s u"><i><s><u>uis</u></s></i></span></li></ul>',
-        '<br>'],
-      wantExportHtmlBody: '<ul class=bullet><li>bullet line 1</li></ul><br><ul class=bullet>' +
-      '<li>bullet line 2<ul class=bullet><li>bullet2 line 1</li></ul></li></ul><br>' +
-      '<ul class=bullet><li><ul class=bullet><li><ul class=bullet><li><ul class=bullet><li>' +
-      '<strong><em><s><u>bullet4 line 2 bisu</u></s></em></strong></li><li><strong><s>' +
-      'bullet4 line 2 bs</s></strong></li><li><u>bullet4 line 2 u<em><s>uis</s></em></u></li>' +
-      '</ul></li></ul></li></ul></li></ul><br>',
-      wantExportText: '\t* bullet line 1\n\n\t* bullet line 2\n\t\t* bullet2 line 1' +
-      '\n\n\t\t\t\t* bullet4 line 2 bisu\n\t\t\t\t* bullet4 line 2 bs\n\t\t\t\t* ' +
-      'bullet4 line 2 uuis\n\n',
+            '<span class="i s u"><i><s><u>uis</u></s></i></span></li></ul>',
+        '<br>',
+      ],
+      wantExportHtmlBody: [
+        '<ul class=bullet><li>bullet line 1</li></ul>',
+        '<br>',
+        '<ul class=bullet>',
+        ' <li>bullet line 2',
+        '  <ul class=bullet><li>bullet2 line 1</li></ul>',
+        ' </li>',
+        '</ul>',
+        '<br>',
+        '<ul class=bullet>',
+        ' <li>',
+        '  <ul class=bullet>',
+        '   <li>',
+        '    <ul class=bullet>',
+        '     <li>',
+        '      <ul class=bullet>',
+        '       <li><strong><em><s><u>bullet4 line 2 bisu</u></s></em></strong></li>',
+        '       <li><strong><s>bullet4 line 2 bs</s></strong></li>',
+        '       <li><u>bullet4 line 2 u<em><s>uis</s></em></u></li>',
+        '      </ul>',
+        '     </li>',
+        '    </ul>',
+        '   </li>',
+        '  </ul>',
+        ' </li>',
+        '</ul>',
+        '<br>',
+      ].map((l) => l.replace(/^\s+/, '')).join(''),
+      wantExportText: [
+        '\t* bullet line 1\n',
+        '\n',
+        '\t* bullet line 2\n',
+        '\t\t* bullet2 line 1\n',
+        '\n',
+        '\t\t\t\t* bullet4 line 2 bisu\n',
+        '\t\t\t\t* bullet4 line 2 bs\n',
+        '\t\t\t\t* bullet4 line 2 uuis\n',
+        '\n',
+      ].join(''),
     },
     {
       name: 'import a pad with nested bullets from html',
-      inputHtmlBody: '<ul class="list-bullet1"><li>bullet line 1</li>' +
-          '</ul><ul class="list-bullet1"><li>bullet line 2</li><ul class="list-bullet2">' +
-          '<li>bullet2 line 1</li></ul></ul><ul class="list-bullet1"><ul class="list-bullet2">' +
-          '<ul class="list-bullet3"><ul class="list-bullet4"><li>bullet4 line 2</li>' +
-          '<li>bullet4 line 2</li><li>bullet4 line 2</li></ul><li>bullet3 line 1</li></ul>',
+      inputHtmlBody: [
+        '<ul class="list-bullet1"><li>bullet line 1</li></ul>',
+        '<ul class="list-bullet1">',
+        ' <li>bullet line 2</li>',
+        ' <ul class="list-bullet2">',
+        '  <li>bullet2 line 1</li>',
+        ' </ul>',
+        '</ul>',
+        '<ul class="list-bullet1">',
+        ' <ul class="list-bullet2">',
+        '  <ul class="list-bullet3">',
+        '   <ul class="list-bullet4">',
+        '    <li>bullet4 line 2</li>',
+        '    <li>bullet4 line 2</li>',
+        '    <li>bullet4 line 2</li>',
+        '   </ul>',
+        '   <li>bullet3 line 1</li>',
+        '  </ul>',
+      ].join(''),
       wantPadLines: [
         '<ul class="list-bullet1"><li><span class="">bullet line 1</span></li></ul>',
         '<ul class="list-bullet1"><li><span class="">bullet line 2</span></li></ul>',
@@ -120,27 +277,78 @@ describe('importexport.js', function () {
         '<ul class="list-bullet3"><li><span class="">bullet3 line 1</span></li></ul>',
         '<br>',
       ],
-      wantExportHtmlBody: '<ul class=bullet><li>bullet line 1</li><li>bullet line 2' +
-      '<ul class=bullet><li>bullet2 line 1<ul class=bullet><li><ul class=bullet><li>' +
-      'bullet4 line 2</li><li>bullet4 line 2</li><li>bullet4 line 2</li></ul></li><li>' +
-      'bullet3 line 1</li></ul></li></ul></li></ul><br>',
-      wantExportText: '\t* bullet line 1\n\t* bullet line 2\n\t\t* bullet2 line 1' +
-      '\n\t\t\t\t* bullet4 line 2\n\t\t\t\t* bullet4 line 2\n\t\t\t\t* bullet4 line 2' +
-      '\n\t\t\t* bullet3 line 1\n\n',
+      wantExportHtmlBody: [
+        '<ul class=bullet>',
+        ' <li>bullet line 1</li>',
+        ' <li>bullet line 2',
+        '  <ul class=bullet>',
+        '   <li>bullet2 line 1',
+        '    <ul class=bullet>',
+        '     <li>',
+        '      <ul class=bullet>',
+        '       <li>bullet4 line 2</li>',
+        '       <li>bullet4 line 2</li>',
+        '       <li>bullet4 line 2</li>',
+        '      </ul>',
+        '     </li>',
+        '     <li>bullet3 line 1</li>',
+        '    </ul>',
+        '   </li>',
+        '  </ul>',
+        ' </li>',
+        '</ul>',
+        '<br>',
+      ].map((l) => l.replace(/^\s+/, '')).join(''),
+      wantExportText: [
+        '\t* bullet line 1\n',
+        '\t* bullet line 2\n',
+        '\t\t* bullet2 line 1\n',
+        '\t\t\t\t* bullet4 line 2\n',
+        '\t\t\t\t* bullet4 line 2\n',
+        '\t\t\t\t* bullet4 line 2\n',
+        '\t\t\t* bullet3 line 1\n',
+        '\n',
+      ].join(''),
     },
     {
       name: 'import with 8 levels of bullets and newlines and attributes from html',
-      inputHtmlBody: '<ul class="list-bullet1"><li>bullet line 1</li>' +
-        '</ul><br/><ul class="list-bullet1"><li>bullet line 2</li><ul class="list-bullet2"><li>' +
-        'bullet2 line 1</li></ul></ul><br/><ul class="list-bullet1"><ul class="list-bullet2">' +
-        '<ul class="list-bullet3"><ul class="list-bullet4"><li><span class="b s i u"><b><i>' +
-        '<s><u>bullet4 line 2 bisu</u></s></i></b></span></li><li><span class="b s "><b><s>' +
-        'bullet4 line 2 bs</s></b></span></li><li><span class="u"><u>bullet4 line 2 u' +
-        '</u></span><span class="u i s"><i><s><u>uis</u></s></i></span></li>' +
-        '<ul class="list-bullet5"><ul class="list-bullet6"><ul class="list-bullet7">' +
-        '<ul class="list-bullet8"><li><span class="">foo</span></li><li><span class="b s">' +
-        '<b><s>foobar bs</b></s></span></li></ul></ul></ul></ul><ul class="list-bullet5">' +
-        '<li>foobar</li></ul></ul></ul></ul>',
+      inputHtmlBody: [
+        '<ul class="list-bullet1">',
+        ' <li>bullet line 1</li>',
+        '</ul>',
+        '<br/>',
+        '<ul class="list-bullet1">',
+        ' <li>bullet line 2</li>',
+        ' <ul class="list-bullet2">',
+        '  <li>bullet2 line 1</li>',
+        ' </ul>',
+        '</ul>',
+        '<br/>',
+        '<ul class="list-bullet1">',
+        ' <ul class="list-bullet2">',
+        '  <ul class="list-bullet3">',
+        '   <ul class="list-bullet4">',
+        '    <li><span class="b s i u"><b><i><s><u>bullet4 line 2 bisu</u></s></i></b></span></li>',
+        '    <li><span class="b s "><b><s>bullet4 line 2 bs</s></b></span></li>',
+        '    <li><span class="u"><u>bullet4 line 2 u</u></span>' +
+                '<span class="u i s"><i><s><u>uis</u></s></i></span></li>',
+        '    <ul class="list-bullet5">',
+        '     <ul class="list-bullet6">',
+        '      <ul class="list-bullet7">',
+        '       <ul class="list-bullet8">',
+        '        <li><span class="">foo</span></li>',
+        '        <li><span class="b s"><b><s>foobar bs</b></s></span></li>',
+        '       </ul>',
+        '      </ul>',
+        '     </ul>',
+        '    </ul>',
+        '    <ul class="list-bullet5">',
+        '     <li>foobar</li>',
+        '    </ul>',
+        '   </ul>',
+        '  </ul>',
+        ' </ul>',
+      ].join(''),
       wantPadLines: [
         '<ul class="list-bullet1"><li><span class="">bullet line 1</span></li></ul>',
         '<br>',
@@ -148,42 +356,104 @@ describe('importexport.js', function () {
         '<ul class="list-bullet2"><li><span class="">bullet2 line 1</span></li></ul>',
         '<br>',
         '<ul class="list-bullet4"><li><span class="b i s u"><b><i><s><u>' +
-        'bullet4 line 2 bisu</u></s></i></b></span></li></ul>',
+            'bullet4 line 2 bisu</u></s></i></b></span></li></ul>',
         '<ul class="list-bullet4"><li><span class="b s"><b><s>bullet4 line 2 bs</s>' +
-        '</b></span></li></ul>',
+            '</b></span></li></ul>',
         '<ul class="list-bullet4"><li><span class="u"><u>bullet4 line 2 u</u></span>' +
-        '<span class="i s u"><i><s><u>uis</u></s></i></span></li></ul>',
+            '<span class="i s u"><i><s><u>uis</u></s></i></span></li></ul>',
         '<ul class="list-bullet8"><li><span class="">foo</span></li></ul>',
         '<ul class="list-bullet8"><li><span class="b s"><b><s>foobar bs</s></b></span></li></ul>',
         '<ul class="list-bullet5"><li><span class="">foobar</span></li></ul>',
         '<br>',
       ],
-      wantExportHtmlBody: '<ul class=bullet><li>bullet line 1</li></ul><br>' +
-      '<ul class=bullet><li>bullet line 2<ul class=bullet><li>bullet2 line 1</li></ul>' +
-      '</li></ul><br><ul class=bullet><li><ul class=bullet><li><ul class=bullet><li>' +
-      '<ul class=bullet><li><strong><em><s><u>bullet4 line 2 bisu</u></s></em></strong>' +
-      '</li><li><strong><s>bullet4 line 2 bs</s></strong></li><li><u>bullet4 line 2 u<em>' +
-      '<s>uis</s></em></u><ul class=bullet><li><ul class=bullet><li><ul class=bullet><li>' +
-      '<ul class=bullet><li>foo</li><li><strong><s>foobar bs</s></strong></li></ul></li></ul>' +
-      '</li></ul></li><li>foobar</li></ul></li></ul></li></ul></li></ul></li></ul><br>',
-      wantExportText: '\t* bullet line 1\n\n\t* bullet line 2\n\t\t* bullet2 line 1' +
-      '\n\n\t\t\t\t* bullet4 line 2 bisu\n\t\t\t\t* bullet4 line 2 bs\n\t\t\t\t* ' +
-      'bullet4 line 2 uuis\n\t\t\t\t\t\t\t\t* foo\n\t\t\t\t\t\t\t\t* ' +
-      'foobar bs\n\t\t\t\t\t* foobar\n\n',
+      wantExportHtmlBody: [
+        '<ul class=bullet>',
+        ' <li>bullet line 1</li>',
+        '</ul>',
+        '<br>',
+        '<ul class=bullet>',
+        ' <li>bullet line 2',
+        '  <ul class=bullet>',
+        '   <li>bullet2 line 1</li>',
+        '  </ul>',
+        ' </li>',
+        '</ul>',
+        '<br>',
+        '<ul class=bullet>',
+        ' <li>',
+        '  <ul class=bullet>',
+        '   <li>',
+        '    <ul class=bullet>',
+        '     <li>',
+        '      <ul class=bullet>',
+        '       <li><strong><em><s><u>bullet4 line 2 bisu</u></s></em></strong></li>',
+        '       <li><strong><s>bullet4 line 2 bs</s></strong></li>',
+        '       <li><u>bullet4 line 2 u<em><s>uis</s></em></u>',
+        '        <ul class=bullet>',
+        '         <li>',
+        '          <ul class=bullet>',
+        '           <li>',
+        '            <ul class=bullet>',
+        '             <li>',
+        '              <ul class=bullet>',
+        '               <li>foo</li>',
+        '               <li><strong><s>foobar bs</s></strong></li>',
+        '              </ul>',
+        '             </li>',
+        '            </ul>',
+        '           </li>',
+        '          </ul>',
+        '         </li>',
+        '         <li>foobar</li>',
+        '        </ul>',
+        '       </li>',
+        '      </ul>',
+        '     </li>',
+        '    </ul>',
+        '   </li>',
+        '  </ul>',
+        ' </li>',
+        '</ul>',
+        '<br>',
+      ].map((l) => l.replace(/^\s+/, '')).join(''),
+      wantExportText: [
+        '\t* bullet line 1\n',
+        '\n',
+        '\t* bullet line 2\n',
+        '\t\t* bullet2 line 1\n',
+        '\n',
+        '\t\t\t\t* bullet4 line 2 bisu\n',
+        '\t\t\t\t* bullet4 line 2 bs\n',
+        '\t\t\t\t* bullet4 line 2 uuis\n',
+        '\t\t\t\t\t\t\t\t* foo\n',
+        '\t\t\t\t\t\t\t\t* foobar bs\n',
+        '\t\t\t\t\t* foobar\n',
+        '\n',
+      ].join(''),
     },
     {
       name: 'import a pad with ordered lists from html',
-      inputHtmlBody: '<ol class="list-number1" start="1">' +
-    '<li>number 1 line 1</li></ol><ol class="list-number1" start="2">' +
-    '<li>number 2 line 2</li></ol>',
+      inputHtmlBody: [
+        '<ol class="list-number1" start="1"><li>number 1 line 1</li></ol>',
+        '<ol class="list-number1" start="2"><li>number 2 line 2</li></ol>',
+      ].join(''),
       wantPadLines: [
         '<ol start="1" class="list-number1"><li><span class="">number 1 line 1</span></li></ol>',
         '<ol start="2" class="list-number1"><li><span class="">number 2 line 2</span></li></ol>',
         '<br>',
       ],
-      wantExportHtmlBody: '<ol start=1 class=number><li>number 1 line 1</li>' +
-      '<li>number 2 line 2</li></ol><br>',
-      wantExportText: '\t1. number 1 line 1\n\t2. number 2 line 2\n\n',
+      wantExportHtmlBody: [
+        '<ol start=1 class=number>',
+        ' <li>number 1 line 1</li>',
+        ' <li>number 2 line 2</li>',
+        '</ol>',
+        '<br>',
+      ].map((l) => l.replace(/^\s+/, '')).join(''),
+      wantExportText: [
+        '\t1. number 1 line 1\n',
+        '\t2. number 2 line 2\n',
+        '\n',
+      ].join(''),
     },
   ];
 
