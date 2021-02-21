@@ -499,16 +499,6 @@ describe('importexport.js', function () {
 
   let confirm;
   before(async function () {
-    // Check if the browser provides a way to get a mutable FileList. See:
-    // https://stackoverflow.com/q/47119426
-    try {
-      const dt = new ClipboardEvent('').clipboardData || new DataTransfer();
-      if (dt == null) return this.skip();
-      dt.items.add(new File(['testing'], 'file.txt'));
-      helper.padChrome$('#importform input[type=file]')[0].files = dt.files;
-    } catch (err) {
-      return this.skip();
-    }
     this.timeout(60000);
     await new Promise(
         (resolve, reject) => helper.newPad((err) => err != null ? reject(err) : resolve()));
@@ -518,6 +508,15 @@ describe('importexport.js', function () {
 
   after(async function () {
     helper.padChrome$.window.confirm = confirm;
+  });
+
+  beforeEach(async function () {
+    const popup = helper.padChrome$('#import_export');
+    const isVisible = () => popup.hasClass('popup-show');
+    if (isVisible()) return;
+    const button = helper.padChrome$('button[data-l10n-id="pad.toolbar.import_export.title"]');
+    button.click();
+    await helper.waitForPromise(isVisible);
   });
 
   const docToHtml = (() => {
@@ -546,7 +545,7 @@ describe('importexport.js', function () {
         dt.items.add(new File([contents], `file.${ext}`, {type: 'text/plain'}));
         const form = helper.padChrome$('#importform');
         form.find('input[type=file]')[0].files = dt.files;
-        form.find('#importsubmitinput').click();
+        form.find('#importsubmitinput').submit();
         try {
           await helper.waitForPromise(() => {
             const got = helper.linesDiv();
