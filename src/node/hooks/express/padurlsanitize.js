@@ -1,7 +1,6 @@
 'use strict';
 
 const padManager = require('../../db/PadManager');
-const url = require('url');
 
 exports.expressCreateServer = (hookName, args, cb) => {
   // redirects browser to the pad's sanitized url if needed. otherwise, renders the html
@@ -21,7 +20,7 @@ exports.expressCreateServer = (hookName, args, cb) => {
       // the pad id was sanitized, so we redirect to the sanitized version
       let realURL = sanitizedPadId;
       realURL = encodeURIComponent(realURL);
-      const query = url.parse(req.url).query;
+      const query = new URL(req.url).search;
       if (query) realURL += `?${query}`;
       res.header('Location', realURL);
       res.status(302).send(`You should be redirected to <a href="${realURL}">${realURL}</a>`);
