@@ -504,6 +504,8 @@ describe('importexport.js', function () {
     try {
       const dt = new ClipboardEvent('').clipboardData || new DataTransfer();
       if (dt == null) return this.skip();
+      dt.items.add(new File(['testing'], 'file.txt'));
+      helper.padChrome$('#importform input[type=file]')[0].files = dt.files;
     } catch (err) {
       return this.skip();
     }
@@ -544,7 +546,7 @@ describe('importexport.js', function () {
         dt.items.add(new File([contents], `file.${ext}`, {type: 'text/plain'}));
         const form = helper.padChrome$('#importform');
         form.find('input[type=file]')[0].files = dt.files;
-        form.find('input[type=submit]').submit();
+        form.find('#importsubmitinput').click();
         try {
           await helper.waitForPromise(() => {
             const got = helper.linesDiv();
