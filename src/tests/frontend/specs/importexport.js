@@ -3,7 +3,7 @@
 describe('importexport.js', function () {
   const testCases = [
     {
-      name: 'import a pad with newlines from txt',
+      name: 'text with newlines',
       inputText: [
         'imported text\n',
         'newline',
@@ -22,7 +22,7 @@ describe('importexport.js', function () {
       ].join(''),
     },
     {
-      name: 'import a pad with newlines from html',
+      name: 'HTML with newlines',
       inputHtmlBody: [
         'htmltext<br>',
         'newline',
@@ -44,7 +44,7 @@ describe('importexport.js', function () {
       ].join(''),
     },
     {
-      name: 'import a pad with attributes from html',
+      name: 'HTML with attributes',
       inputHtmlBody: [
         'htmltext<br>',
         '<span class="b s i u"><b><i><s><u>newline</u></s></i></b>',
@@ -66,7 +66,7 @@ describe('importexport.js', function () {
       ].join(''),
     },
     {
-      name: 'import a pad with bullets from html',
+      name: 'HTML with bullets',
       inputHtmlBody: [
         '<ul class="list-bullet1">',
         ' <li>bullet line 1</li>',
@@ -106,7 +106,7 @@ describe('importexport.js', function () {
       ].join(''),
     },
     {
-      name: 'import a pad with bullets and newlines from html',
+      name: 'HTML with bullets and newlines',
       inputHtmlBody: [
         '<ul class="list-bullet1">',
         ' <li>bullet line 1</li>',
@@ -170,7 +170,7 @@ describe('importexport.js', function () {
       ].join(''),
     },
     {
-      name: 'import a pad with bullets and newlines and attributes from html',
+      name: 'HTML with bullets, newlines, and attributes',
       inputHtmlBody: [
         '<ul class="list-bullet1">',
         ' <li>bullet line 1</li>',
@@ -259,7 +259,7 @@ describe('importexport.js', function () {
       ].join(''),
     },
     {
-      name: 'import a pad with nested bullets from html',
+      name: 'HTML with nested bullets',
       inputHtmlBody: [
         '<ul class="list-bullet1"><li>bullet line 1</li></ul>',
         '<ul class="list-bullet1">',
@@ -332,7 +332,7 @@ describe('importexport.js', function () {
       ].join(''),
     },
     {
-      name: 'import with 8 levels of bullets and newlines and attributes from html',
+      name: 'HTML with 8 levels of bullets, newlines, and attributes',
       inputHtmlBody: [
         '<ul class="list-bullet1">',
         ' <li>bullet line 1</li>',
@@ -472,7 +472,7 @@ describe('importexport.js', function () {
       ].join(''),
     },
     {
-      name: 'import a pad with ordered lists from html',
+      name: 'HTML with ordered lists',
       inputHtmlBody: [
         '<ol class="list-number1" start="1"><li>number 1 line 1</li></ol>',
         '<ol class="list-number1" start="2"><li>number 2 line 2</li></ol>',
