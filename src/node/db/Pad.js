@@ -58,7 +58,7 @@ Pad.prototype.getSavedRevisionsNumber = function getSavedRevisionsNumber() {
 
 Pad.prototype.getSavedRevisionsList = function getSavedRevisionsList() {
   const savedRev = [];
-  for (const rev of Object.keys(this.savedRevisions)) {
+  for (const rev in this.savedRevisions) {
     savedRev.push(this.savedRevisions[rev].revNum);
   }
   savedRev.sort((a, b) => a - b);
@@ -423,7 +423,7 @@ Pad.prototype.copy = async function copy(destinationID, force) {
   return {padID: destinationID};
 };
 
-Pad.prototype.checkIfGroupExistAndReturnIt = async (destinationID) => {
+Pad.prototype.checkIfGroupExistAndReturnIt = async function checkIfGroupExistAndReturnIt(destinationID) {
   let destGroupID = false;
 
   if (destinationID.indexOf('$') >= 0) {
@@ -438,7 +438,7 @@ Pad.prototype.checkIfGroupExistAndReturnIt = async (destinationID) => {
   return destGroupID;
 };
 
-Pad.prototype.removePadIfForceIsTrueAndAlreadyExist = async (destinationID, force) => {
+Pad.prototype.removePadIfForceIsTrueAndAlreadyExist = async function removePadIfForceIsTrueAndAlreadyExist(destinationID, force) {
   // if the pad exists, we should abort, unless forced.
   const exists = await padManager.doesPadExist(destinationID);
 
@@ -461,7 +461,7 @@ Pad.prototype.removePadIfForceIsTrueAndAlreadyExist = async (destinationID, forc
   }
 };
 
-Pad.prototype.copyAuthorInfoToDestinationPad = (destinationID) => {
+Pad.prototype.copyAuthorInfoToDestinationPad = function copyAuthorInfoToDestinationPad(destinationID) {
   // add the new sourcePad to all authors who contributed to the old one
   this.getAllAuthors().forEach((authorID) => {
     authorManager.addPad(authorID, destinationID);
